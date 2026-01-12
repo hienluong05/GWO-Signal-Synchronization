@@ -1,4 +1,4 @@
-from chaotic_gwo import Chaotic_GWO
+from chaoticgwo import ChaoticGwo
 import numpy as np
 
 # Hàm Parabol lệch: Min tại (5, -5) với giá trị 25
@@ -19,7 +19,7 @@ pop_size = 50      # Tăng số lượng sói lên chút cho nhanh tìm thấy
 max_iter = 100     # Tăng số vòng lặp
 
 # Chạy GWO (Logic MIN)
-my_gwo = Chaotic_GWO(fitness_function_offset, lb, ub, dim, pop_size, max_iter)
+my_gwo = ChaoticGwo(fitness_function_offset, lb, ub, dim, pop_size, max_iter)
 best_pos, best_score, _ = my_gwo.optimize()
 
 print("\n=== KẾT QUẢ KIỂM TRA ===")

@@ -1,7 +1,7 @@
 import numpy as np
 
 class IGWO:
-    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter):
+    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter, **kwargs):
         self.func = objective_function
         self.lb = np.array(lb)
         self.ub = np.array(ub)
@@ -74,7 +74,8 @@ class IGWO:
                 w1 = abs(self.alpha_score)
                 w2 = abs(self.beta_score)
                 w3 = abs(self.delta_score)
-                new_pos = (w1 * new_pos_follow_alpha + w2 * new_pos_follow_beta + w3 * new_pos_follow_delta) / (w1 + w2 + w3)
+                EPSILON = 1e-20
+                new_pos = (w1 * new_pos_follow_alpha + w2 * new_pos_follow_beta + w3 * new_pos_follow_delta) / (w1 + w2 + w3 + EPSILON)
                 self.positions[i] = new_pos
                     
             # print(f"Iter {t}: Best Fitness = {self.alpha_score:.5f}")

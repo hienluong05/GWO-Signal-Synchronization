@@ -1,7 +1,7 @@
 import numpy as np
 
 class GWO:
-    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter):
+    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter, **kwargs):
         self.func = objective_function
         self.lb = np.array(lb)
         self.ub = np.array(ub)

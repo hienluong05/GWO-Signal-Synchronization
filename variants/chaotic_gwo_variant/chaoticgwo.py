@@ -1,8 +1,8 @@
 import numpy as np
-from chaos import ChaoticMap
+from .chaos import ChaoticMap
 
-class Chaotic_GWO:
-    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter):
+class ChaoticGwo:
+    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter, **kwargs):
         self.func = objective_function
         self.lb = np.array(lb)
         self.ub = np.array(ub)

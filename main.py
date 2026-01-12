@@ -1,37 +1,49 @@
-import numpy as np
-from standard.gwo_standard import GWO          # Import "Bộ não"
-from problem_model import SignalSyncProblem # Import "Đề bài"
+# --- IMPORT MODULES ---
+from standard.gwo_standard import GWO
+from variants.chaotic_gwo_variant.chaoticgwo import ChaoticGwo
+from variants.hybird_gwo_pso_variant.hybridgwo import HybridGwo
+from variants.igwo_variant.igwo import IGWO
 
-# 1. Khởi tạo bài toán
-problem = SignalSyncProblem(num_symbols=100, Fs=20, noise_power=0.1)
+from ExperimentRunner import ExperimentRunner
+from Visualizer import Visualizer
+from TaskWrapper import MathTask, SignalTask
 
-# 2. Lấy cấu hình từ bài toán
-lb, ub = problem.get_bounds()
-dim = 2             # 2 biến: Tau và Phi
-pop_size = 30       # 30 sói
-max_iter = 50      # 50 vòng lặp
+# --- CONFIGURATION ---
+CONFIG = {
+    "pop_size": 30,
+    "max_iter": 500,
+    "runs": 20
+}
 
-print("--- Bắt đầu thả sói đi săn ---")
+# 1. Đăng ký các thuật toán tham chiến
+algorithms = {
+    "Standard GWO": (GWO, {}),
+    "Chaotic GWO (Logistic)": (ChaoticGwo, {"map_type": "logistic"}),
+    "Chaotic GWO (Tent)": (ChaoticGwo, {"map_type": "tent"}),
+    "Hybrid GWO-PSO": (HybridGwo, {}),
+    "IGWO": (IGWO, {})
+}
 
-# 3. Khởi tạo GWO
-my_gwo = GWO(problem.fitness_function, lb, ub, dim, pop_size, max_iter)
+# 2. Đăng ký các bài toán cần giải
+tasks = [
+    MathTask("F1"),
+    MathTask("F2"),
+    MathTask("F3"),
+    SignalTask()  # Bài toán thực tế
+]
 
-# 4. Chạy tối ưu
-best_pos, best_score, curve = my_gwo.optimize()
+# --- MAIN EXECUTION ---
+if __name__ == "__main__":
+    # 3. Khởi tạo Engine chạy thực nghiệm
+    runner = ExperimentRunner(algorithms, tasks, CONFIG)
 
-# 5. So sánh kết quả
-tau_est = int(best_pos[0])
-phi_est = best_pos[1]
+    # 4. Chạy và lấy kết quả
+    results = runner.run()
 
-print("\n================ KẾT QUẢ ================")
-print(f"{'Tham số':<10} | {'Thực tế (Target)':<20} | {'GWO Tìm được':<20} | {'Sai số'}")
-print("-" * 65)
-print(f"{'Tau':<10} | {problem.tau_true:<20} | {tau_est:<20} | {abs(problem.tau_true - tau_est)}")
-print(f"{'Phi':<10} | {problem.phi_true:<20.4f} | {phi_est:<20.4f} | {abs(problem.phi_true - phi_est):.4f}")
-print("=========================================")
+    # 5. Hiển thị kết quả (View)
+    viz = Visualizer(results, save_dir="report")
+    viz.export_csv()
+    viz.plot_convergence()
+    viz.plot_boxplot()
 
-# Kiểm tra xem sói có tìm đúng không
-if abs(problem.tau_true - tau_est) <= 1 and abs(problem.phi_true - phi_est) < 0.1:
-    print(">> THÀNH CÔNG: Sói đã bắt được mồi! (Đồng bộ thành công)")
-else:
-    print(">> THẤT BẠI: Sói bị lạc hướng. Cần chỉnh lại tham số.")
+    print("\n[DONE] Đã hoàn thành! Kiểm tra thư mục 'report' để lấy số liệu.")

@@ -1,7 +1,7 @@
 import numpy as np
 
-class GWO_hybrid:
-    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter):
+class HybridGwo:
+    def __init__(self, objective_function, lb, ub, dim, pop_size, max_iter, **kwargs):
         # Giống GWO gốc
         self.func = objective_function
         self.lb = np.array(lb)
